@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Login Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Firebase Test Login</h2>
+
+  <input id="email" type="email" placeholder="Email" /><br>
+  <input id="password" type="password" placeholder="Password" /><br>
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Sign Up</button>
+
+  <p id="msg"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
+      from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
+      authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
+      projectId: "ai-study-planner-f2a0f",
+      storageBucket: "ai-study-planner-f2a0f.firebasestorage.app",
+      messagingSenderId: "211749204675",
+      appId: "1:211749204675:web:8877ab086c461f78f4a876"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.signup = () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          msg.textContent = "✅ Account created!";
+        })
+        .catch(error => {
+          msg.textContent = "❌ " + error.message;
+        });
+    };
+
+    window.login = () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          msg.textContent = "✅ Login successful!";
+        })
+        .catch(error => {
+          msg.textContent = "❌ " + error.message;
+        });
+    };
+  </script>
+
+</body>
+</html>
