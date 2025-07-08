@@ -28,11 +28,12 @@
 
   <p id="msg"></p>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
-      from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
+  <!-- ✅ Firebase App + Auth CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
 
+  <script>
+    // ✅ Your Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
       authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
@@ -42,36 +43,37 @@
       appId: "1:211749204675:web:8877ab086c461f78f4a876"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // ✅ Initialize Firebase (with compat mode)
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    window.signup = () => {
+    function signup() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      createUserWithEmailAndPassword(auth, email, password)
+      auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
           msg.textContent = "✅ Account created!";
         })
         .catch(error => {
           msg.textContent = "❌ " + error.message;
         });
-    };
+    }
 
-    window.login = () => {
+    function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      signInWithEmailAndPassword(auth, email, password)
+      auth.signInWithEmailAndPassword(email, password)
         .then(() => {
           msg.textContent = "✅ Login successful!";
         })
         .catch(error => {
           msg.textContent = "❌ " + error.message;
         });
-    };
+    }
   </script>
 
 </body>
