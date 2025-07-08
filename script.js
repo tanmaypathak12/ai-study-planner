@@ -8,7 +8,8 @@ const email = document.getElementById("email");
 const password = document.getElementById("password");
 const msg = document.getElementById("msg");
 
-export function login() {
+// Attach to window so buttons can call them
+window.login = function () {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
       msg.textContent = "✅ Login successful!";
@@ -17,9 +18,9 @@ export function login() {
     .catch(error => {
       msg.textContent = "❌ " + error.message;
     });
-}
+};
 
-export function signup() {
+window.signup = function () {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
       msg.textContent = "✅ Account created!";
@@ -28,4 +29,4 @@ export function signup() {
     .catch(error => {
       msg.textContent = "❌ " + error.message;
     });
-}
+};
