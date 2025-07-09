@@ -19,14 +19,17 @@
     <button onclick="login()">Login</button>
     <button onclick="signup()">Sign Up</button>
     <div id="msg" class="error"></div>
+    <pre id="debug" style="text-align:left; margin-top: 20px; font-size: 12px;"></pre>
   </div>
 
-  <!-- Firebase v8 Compatibility CDN -->
+  <!-- Firebase SDK (v8 for compatibility) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <script>
-    const cfg = {
+    const debug = document.getElementById("debug");
+
+    const config = {
       apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
       authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
       projectId: "ai-study-planner-f2a0f",
@@ -34,28 +37,46 @@
       messagingSenderId: "211749204675",
       appId: "1:211749204675:web:8877ab086c461f78f4a876"
     };
-    firebase.initializeApp(cfg);
+
+    firebase.initializeApp(config);
 
     firebase.auth().onAuthStateChanged(user => {
+      debug.textContent += `onAuthStateChanged: ${user ? user.email : 'no user'}\n`;
       if (user) window.location.href = "dashboard.html";
     });
 
     function signup() {
-      const e = document.getElementById("email").value;
-      const p = document.getElementById("password").value;
-      const m = document.getElementById("msg");
-      firebase.auth().createUserWithEmailAndPassword(e, p)
-        .then(() => { window.location.href = "dashboard.html" })
-        .catch(err => { m.textContent = "❌ " + err.message });
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      debug.textContent += `Trying sign up...\n`;
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          debug.textContent += `Signed up as: ${user.user.email}\n`;
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          msg.textContent = "❌ " + error.message;
+          debug.textContent += `Signup Error: ${error.message}\n`;
+        });
     }
 
     function login() {
-      const e = document.getElementById("email").value;
-      const p = document.getElementById("password").value;
-      const m = document.getElementById("msg");
-      firebase.auth().signInWithEmailAndPassword(e, p)
-        .then(() => { window.location.href = "dashboard.html" })
-        .catch(err => { m.textContent = "❌ " + err.message });
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      debug.textContent += `Trying login...\n`;
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(user => {
+          debug.textContent += `Logged in as: ${user.user.email}\n`;
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          msg.textContent = "❌ " + error.message;
+          debug.textContent += `Login Error: ${error.message}\n`;
+        });
     }
   </script>
 </body>
