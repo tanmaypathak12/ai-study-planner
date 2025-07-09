@@ -2,59 +2,57 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Firebase Login Test</title>
+  <title>Firebase Auth Test</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 40px;
+      margin-top: 50px;
     }
     input, button {
-      margin: 10px;
       padding: 10px;
+      margin: 10px;
       width: 80%;
       max-width: 300px;
     }
   </style>
 </head>
 <body>
+  <h2>Firebase Auth Test (Safe)</h2>
 
-  <h2>Firebase Test Login</h2>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
 
-  <input id="email" type="email" placeholder="Email" /><br>
-  <input id="password" type="password" placeholder="Password" /><br>
-  <button onclick="login()">Login</button>
   <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
 
   <p id="msg"></p>
 
-  <!-- ✅ Firebase App + Auth CDN -->
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+  <!-- ✅ Firebase v8 CDN (simple, non-module version) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <script>
-    // ✅ Your Firebase Config
+    // ✅ Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
       authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
       projectId: "ai-study-planner-f2a0f",
-      storageBucket: "ai-study-planner-f2a0f.firebasestorage.app",
+      storageBucket: "ai-study-planner-f2a0f.appspot.com",
       messagingSenderId: "211749204675",
       appId: "1:211749204675:web:8877ab086c461f78f4a876"
     };
 
-    // ✅ Initialize Firebase (with compat mode)
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
 
     function signup() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      auth.createUserWithEmailAndPassword(email, password)
+      firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(() => {
-          msg.textContent = "✅ Account created!";
+          msg.textContent = "✅ Account created successfully!";
         })
         .catch(error => {
           msg.textContent = "❌ " + error.message;
@@ -66,7 +64,7 @@
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      auth.signInWithEmailAndPassword(email, password)
+      firebase.auth().signInWithEmailAndPassword(email, password)
         .then(() => {
           msg.textContent = "✅ Login successful!";
         })
@@ -75,6 +73,5 @@
         });
     }
   </script>
-
 </body>
 </html>
