@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - AI Study Planner</title>
+  <title>Study Planner Dashboard</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial;
       background: #f0f2f5;
-      padding: 40px;
+      padding: 30px;
       text-align: center;
     }
 
@@ -20,50 +20,108 @@
       margin: auto;
     }
 
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
     button {
-      margin-top: 20px;
       padding: 10px 20px;
       border: none;
-      background: #dc3545;
+      background: #28a745;
       color: white;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
-      background: #c82333;
+      background: #218838;
+    }
+
+    .logout-btn {
+      background-color: crimson;
+      margin-top: 20px;
+    }
+
+    .plan {
+      background: #e9f7ef;
+      border: 1px solid #c3e6cb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>📅 Welcome to Your Study Dashboard</h2>
-    <p id="user-email"></p>
-    <button onclick="logout()">Logout</button>
+    <h2>📚 Welcome to Your Study Planner</h2>
+    <p id="user-email">Loading user...</p>
+
+    <input type="text" id="subject" placeholder="Subject Name" required>
+    <input type="number" id="chapters" placeholder="Total Chapters" required>
+    <input type="number" id="weeks" placeholder="Weeks to prepare" required>
+
+    <button onclick="generatePlan()">Generate Plan</button>
+    <div id="plan-output" class="plan"></div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
+  <!-- Firebase SDKs -->
   <script type="module">
-    import { auth } from './firebase.js';
-    import {
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
 
-    // Check if user is logged in
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
+      authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
+      projectId: "ai-study-planner-f2a0f",
+      storageBucket: "ai-study-planner-f2a0f.appspot.com",
+      messagingSenderId: "211749204675",
+      appId: "1:211749204675:web:8877ab086c461f78f4a876"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailDisplay = document.getElementById("user-email");
+
     onAuthStateChanged(auth, user => {
       if (user) {
-        document.getElementById("user-email").textContent = "Logged in as: " + user.email;
+        emailDisplay.textContent = `👋 Hello, ${user.email}`;
       } else {
-        window.location.href = "index.html"; // redirect to login if not logged in
+        window.location.href = "index.html";
       }
     });
 
-    // Logout function
     function logout() {
       signOut(auth).then(() => {
         window.location.href = "index.html";
       });
     }
+
+    window.generatePlan = function () {
+      const subject = document.getElementById("subject").value.trim();
+      const chapters = parseInt(document.getElementById("chapters").value);
+      const weeks = parseInt(document.getElementById("weeks").value);
+      const output = document.getElementById("plan-output");
+
+      if (!subject || !chapters || !weeks || chapters <= 0 || weeks <= 0) {
+        output.textContent = "⚠️ Please enter valid values.";
+        return;
+      }
+
+      const chaptersPerWeek = Math.ceil(chapters / weeks);
+
+      let planText = `📖 <strong>${subject}</strong><br>`;
+      planText += `You need to study <strong>${chaptersPerWeek} chapters per week</strong> for ${weeks} weeks.`;
+
+      output.innerHTML = planText;
+    };
   </script>
 </body>
 </html>
