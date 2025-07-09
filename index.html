@@ -5,7 +5,7 @@
   <title>AI Study Planner - Login</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
       background: #f0f2f5;
       padding-top: 100px;
@@ -56,7 +56,7 @@
     <div id="msg" class="error"></div>
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- ✅ Firebase SDKs and Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
@@ -73,13 +73,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Auto-redirect if user already logged in
+    // Redirect if already logged in
     onAuthStateChanged(auth, user => {
       if (user) {
         window.location.href = "dashboard.html";
       }
     });
 
+    // ✅ Sign Up function
     window.signup = function () {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -94,6 +95,7 @@
         });
     };
 
+    // ✅ Login function
     window.login = function () {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
