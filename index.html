@@ -1,39 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Firebase Auth Test</title>
+  <title>AI Study Planner - Login</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial;
       text-align: center;
-      margin-top: 50px;
+      background: #f0f2f5;
+      padding-top: 100px;
     }
-    input, button {
+    .container {
+      background: white;
+      padding: 40px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 300px;
+    }
+    input {
+      width: 90%;
       padding: 10px;
-      margin: 10px;
-      width: 80%;
-      max-width: 300px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 90%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h2>Firebase Auth Test (Safe)</h2>
+  <div class="container">
+    <h2>🔐 AI Study Planner Login</h2>
+    <input type="email" id="email" placeholder="Enter your email" required><br>
+    <input type="password" id="password" placeholder="Enter password" required><br>
 
-  <input type="email" id="email" placeholder="Email"><br>
-  <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Sign Up</button>
 
-  <button onclick="signup()">Sign Up</button>
-  <button onclick="login()">Login</button>
+    <div id="msg" class="error"></div>
+  </div>
 
-  <p id="msg"></p>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
 
-  <!-- ✅ Firebase v8 CDN (simple, non-module version) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-  <script>
-    // ✅ Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
       authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
@@ -43,73 +70,43 @@
       appId: "1:211749204675:web:8877ab086c461f78f4a876"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    function signup() {
+    // Auto-redirect if user already logged in
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+
+    window.signup = function () {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          msg.textContent = "✅ Account created successfully!";
+          window.location.href = "dashboard.html";
         })
         .catch(error => {
           msg.textContent = "❌ " + error.message;
         });
-    }
+    };
 
-    function login() {
+    window.login = function () {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          msg.textContent = "✅ Login successful!";
+          window.location.href = "dashboard.html";
         })
         .catch(error => {
           msg.textContent = "❌ " + error.message;
         });
-    }
+    };
   </script>
 </body>
 </html>
-<script>
-  firebase.initializeApp(firebaseConfig);
-
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      // If already logged in, redirect to dashboard
-      window.location.href = "dashboard.html";
-    }
-  });
-
-  function signup() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const msg = document.getElementById("msg");
-
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        window.location.href = "dashboard.html"; // Redirect after signup
-      })
-      .catch(error => {
-        msg.textContent = "❌ " + error.message;
-      });
-  }
-
-  function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const msg = document.getElementById("msg");
-
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
-        window.location.href = "dashboard.html"; // Redirect after login
-      })
-      .catch(error => {
-        msg.textContent = "❌ " + error.message;
-      });
-  }
-</script>
