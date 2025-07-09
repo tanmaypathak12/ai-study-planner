@@ -4,64 +4,29 @@
   <meta charset="UTF-8">
   <title>AI Study Planner - Login</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f0f2f5;
-      padding-top: 100px;
-    }
-    .container {
-      background: white;
-      padding: 40px;
-      margin: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 300px;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 90%;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f2f5; padding-top: 100px; }
+    .container { background: white; padding: 40px; margin: auto; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.2); width: 300px; }
+    input, button { width: 90%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+    .error { color: red; margin-top: 10px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>🔐 AI Study Planner Login</h2>
-    <input type="email" id="email" placeholder="Enter your email" required><br>
-    <input type="password" id="password" placeholder="Enter password" required><br>
-
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
     <button onclick="signup()">Sign Up</button>
-
     <div id="msg" class="error"></div>
   </div>
 
-  <!-- ✅ Firebase SDKs and Logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-auth.js";
+  <!-- Firebase v8 Compatibility CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-    const firebaseConfig = {
+  <script>
+    const cfg = {
       apiKey: "AIzaSyD_NKY1UkgsGWKdbVCISFRaADuXtbG4-Ys",
       authDomain: "ai-study-planner-f2a0f.firebaseapp.com",
       projectId: "ai-study-planner-f2a0f",
@@ -69,46 +34,29 @@
       messagingSenderId: "211749204675",
       appId: "1:211749204675:web:8877ab086c461f78f4a876"
     };
+    firebase.initializeApp(cfg);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Redirect if already logged in
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        window.location.href = "dashboard.html";
-      }
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) window.location.href = "dashboard.html";
     });
 
-    // ✅ Sign Up function
-    window.signup = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const msg = document.getElementById("msg");
+    function signup() {
+      const e = document.getElementById("email").value;
+      const p = document.getElementById("password").value;
+      const m = document.getElementById("msg");
+      firebase.auth().createUserWithEmailAndPassword(e, p)
+        .then(() => { window.location.href = "dashboard.html" })
+        .catch(err => { m.textContent = "❌ " + err.message });
+    }
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          window.location.href = "dashboard.html";
-        })
-        .catch(error => {
-          msg.textContent = "❌ " + error.message;
-        });
-    };
-
-    // ✅ Login function
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const msg = document.getElementById("msg");
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          window.location.href = "dashboard.html";
-        })
-        .catch(error => {
-          msg.textContent = "❌ " + error.message;
-        });
-    };
+    function login() {
+      const e = document.getElementById("email").value;
+      const p = document.getElementById("password").value;
+      const m = document.getElementById("msg");
+      firebase.auth().signInWithEmailAndPassword(e, p)
+        .then(() => { window.location.href = "dashboard.html" })
+        .catch(err => { m.textContent = "❌ " + err.message });
+    }
   </script>
 </body>
 </html>
